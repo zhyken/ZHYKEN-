@@ -57,14 +57,24 @@ footer{margin-top:50px;border-top:1px solid var(--line);padding:35px 22px}.foot{
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-function focusSearch(){document.getElementById('q').focus();window.scrollTo({top:0,behavior:'smooth'})}
-async function search(){const q=document.getElementById('q').value.trim();if(!q)return focusSearch();openModal('Zhyken Search');document.getElementById('mtext').textContent='Searching Zhyken products...';document.getElementById('results').innerHTML='<div class="result">Connecting to Zhyken database...</div>';try{const result=await window.supabase.from('products').select('id,name,description,price_inr,rating').ilike('name',`%${q}%`).limit(20);if(result.error)throw result.error;const data=result.data;if(!data||data.length===0){document.getElementById('results').innerHTML='<div class="result"><strong>No products found</strong><br><span style="color:#6f6d67;font-size:13px">The database is connected, but nothing matched your search.</span></div>';return}document.getElementById('mtext').textContent='Products found:';document.getElementById('results').innerHTML=data.map(p=>`<div class="result"><strong>${escapeHtml(p.name||'Unnamed product')}</strong><br><span style="color:#6f6d67;font-size:13px">${escapeHtml(p.description||'')}</span><br><span>₹${p.price_inr??'—'} · ⭐ ${p.rating??'—'}</span></div>`).join('')}catch(error){console.error(error);document.getElementById('mtext').textContent='Database error';document.getElementById('results').innerHTML='<div class="result"><strong>Something went wrong</strong><br><span style="color:#6f6d67;font-size:13px">'+escapeHtml(error.message||String(error))+'</span></div>'}}
-function openModal(t){document.getElementById('mtitle').textContent=t;document.getElementById('mtext').textContent=t==='Saved'?'Your saved products will appear here.':'Your Zhyken space is ready.';document.getElementById('results').innerHTML='';document.getElementById('modal').classList.add('show')}
-function closeModal(){document.getElementById('modal').classList.remove('show')}
-function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));c.classList.add('active')})
-const SUPABASE_URL = 'https://jfrqopxqrzohgmlkgyzq.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_V8ofatRWNFerViI_Ap7l6Q_ecljbz8f'; 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-</script>
+function focusSearch(){
+  document.getElementById('q').focus();
+}
+
+function search(){
+  openModal('Test');
+  document.getElementById('mtext').textContent='The search button is working!';
+}
+
+function openModal(t){
+  document.getElementById('mtitle').textContent=t;
+  document.getElementById('mtext').textContent='Your Zhyken space is ready.';
+  document.getElementById('results').innerHTML='';
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('show');
+}
+</script>  
 </body></html>
