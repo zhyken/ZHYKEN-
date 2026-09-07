@@ -55,6 +55,7 @@ footer{margin-top:50px;border-top:1px solid var(--line);padding:35px 22px}.foot{
 
 <div class="modal" id="modal"><div class="modalbox"><button class="close" onclick="closeModal()">×</button><h2 id="mtitle">Search</h2><p id="mtext">Your Zhyken space is ready.</p><div id="results"></div></div></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 function focusSearch(){document.getElementById('q').focus();window.scrollTo({top:0,behavior:'smooth'})}
 function search(){const q=document.getElementById('q').value.trim();if(!q)return focusSearch();openModal('Zhyken Search');document.getElementById('mtext').textContent='Here’s how Zhyken understands your request:';document.getElementById('results').innerHTML='<div class="result"><strong>'+escapeHtml(q)+'</strong><br><span style="color:#6f6d67;font-size:13px">Product + use + style + budget will be matched here. This demo is ready for the real product engine.</span></div>'}
