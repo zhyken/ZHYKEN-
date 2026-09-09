@@ -71,7 +71,7 @@ async function search(){
   document.getElementById('results').innerHTML='';
 
   try{
-    const {data,error}=await supabase
+    const {data,error}=await db
       .from('products')
       .select('*')
       .ilike('name',`%${q}%`)
@@ -133,6 +133,6 @@ document.querySelectorAll('.chip').forEach(c=>
 
 const SUPABASE_URL='https://jfrqopxqrzohgmlkgyzq.supabase.co';
 const SUPABASE_KEY='sb_publishable_V8ofatRWNFerViI_Ap7l6Q_ecljbz8f';
-const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 </script>
 </body></html>
