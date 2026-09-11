@@ -1386,110 +1386,163 @@ async function performSearch(query){
     }
 
 
-    /* --------------------------------
-       SMART WORD MATCHING
-    -------------------------------- */
+/* --------------------------------
+   SMART PRODUCT RANKING
+-------------------------------- */
 
-    const words = query
-      .toLowerCase()
-      .split(/\s+/)
-      .map(function(word){
+const normalizedQuery =
+  query
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 
-        return word.replace(
-          /[^a-z0-9]+/g,
-          ''
-        );
-
-      })
-      .filter(function(word){
-
-        return word.length > 1;
-
-      });
+const words =
+  normalizedQuery
+    .split(' ')
+    .filter(function(word){
+      return word.length > 1;
+    });
 
 
-    const matchedProducts = (data || [])
-      .map(function(product){
+const rankedProducts = (data || [])
+  .map(function(product){
 
-        const searchableText = (
+    const name =
+      (product.name || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
 
-          (product.name || '') + ' ' +
+    const description =
+      (product.description || '')
+        .toLowerCase();
 
-          (product.description || '') + ' ' +
+    const category =
+      (product.category || '')
+        .toLowerCase();
 
-          (product.category || '') + ' ' +
-
-          (product.room || '')
-
-        ).toLowerCase();
-
-
-        let matchedWords = 0;
-
-
-        words.forEach(function(word){
-
-          if(searchableText.includes(word)){
-
-            matchedWords++;
-
-          }
-
-        });
+    const room =
+      (product.room || '')
+        .toLowerCase();
 
 
-        return {
-
-          product: product,
-
-          matchedWords:
-            matchedWords,
-
-          score:
-            words.length
-            ? matchedWords / words.length
-            : 0
-
-        };
-
-      })
+    let score = 0;
+    let matchedWords = 0;
 
 
-.filter(function(item){
+    /* EXACT PRODUCT NAME */
 
-  if(words.length === 1){
+    if(name === normalizedQuery){
 
-    return item.matchedWords >= 1;
+      score += 1000;
 
-  }
-
-  return item.matchedWords >= 2;
-
-})      
+    }
 
 
-      .sort(function(a,b){
+    /* QUERY APPEARS INSIDE PRODUCT NAME */
 
-        if(b.score !== a.score){
+    else if(name.includes(normalizedQuery)){
 
-          return b.score - a.score;
+      score += 700;
 
-        }
-
-
-        return (
-          Number(b.product.rating || 0) -
-          Number(a.product.rating || 0)
-        );
-
-      })
+    }
 
 
-      .map(function(item){
+    /* WORD MATCHING */
 
-        return item.product;
+    words.forEach(function(word){
 
-      });
+      if(name.includes(word)){
+
+        score += 100;
+        matchedWords++;
+
+      }
+
+      else if(description.includes(word)){
+
+        score += 30;
+        matchedWords++;
+
+      }
+
+      else if(category.includes(word)){
+
+        score += 40;
+        matchedWords++;
+
+      }
+
+      else if(room.includes(word)){
+
+        score += 40;
+        matchedWords++;
+
+      }
+
+    });
+
+
+    /* RATING BONUS */
+
+    const rating =
+      Number(product.rating || 0);
+
+    if(rating >= 4.5){
+
+      score += 15;
+
+    }
+
+    else if(rating >= 4.0){
+
+      score += 8;
+
+    }
+
+
+    return {
+
+      product: product,
+
+      score: score,
+
+      matchedWords: matchedWords
+
+    };
+
+  })
+
+
+  /* REMOVE PRODUCTS WITH NO RELEVANCE */
+
+  .filter(function(item){
+
+    return item.matchedWords > 0;
+
+  })
+
+
+  /* BEST MATCH FIRST */
+
+  .sort(function(a,b){
+
+    return b.score - a.score;
+
+  })
+
+
+  .map(function(item){
+
+    return item.product;
+
+  });
+
+
+const matchedProducts =
+  rankedProducts;
 
 
     /* --------------------------------
