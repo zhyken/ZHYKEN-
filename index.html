@@ -1861,11 +1861,14 @@ function productCard(product){
 
         </div>
 
-        <button
-          class="viewProduct"
-          onclick="productMessage('${escapeHtml(product.name || 'Product')}')">
-          View product
-        </button>
+       <button
+  class="viewProduct"
+  onclick="productMessage(
+    '${escapeHtml(product.name || 'Product')}',
+    '${escapeHtml(product.affiliate_url || '')}'
+  )">
+  View product
+</button> 
 
       </div>
 
@@ -1879,15 +1882,25 @@ function productCard(product){
    TEMP PRODUCT BUTTON
 ========================================= */
 
-function productMessage(name){
+function productMessage(name, url){
 
-  alert(
-    name+
-    '\n\nProduct pages and affiliate links will be connected here next.'
+  if(!url){
+
+    alert(
+      name+
+      '\n\nThis product does not have an affiliate link yet.'
+    );
+
+    return;
+  }
+
+  window.open(
+    url,
+    '_blank',
+    'noopener,noreferrer'
   );
 
 }
-
 
 /* =========================================
    SAVED
