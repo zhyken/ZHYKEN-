@@ -1929,6 +1929,8 @@ const matchedProducts =
 
 function renderResults(products){
 
+  lastSearchProducts = products;
+
   const container =
   document.getElementById('searchResults');
 
@@ -2148,14 +2150,11 @@ function productCard(product){
 
         </div>
 
-       <button
+        <button
   class="viewProduct"
-  onclick="productMessage(
-    '${escapeHtml(product.name || 'Product')}',
-    '${escapeHtml(product.affiliate_url || '')}'
-  )">
+  onclick="openProduct('${escapeHtml(product.id)}')">
   View product
-</button> 
+</button>
 
       </div>
 
@@ -2166,26 +2165,231 @@ function productCard(product){
 
 
 /* =========================================
-   TEMP PRODUCT BUTTON
+   ZHYKEN PRODUCT PAGE
 ========================================= */
 
-function productMessage(name, url){
+let lastSearchProducts = [];
 
-  if(!url){
+
+function openProduct(id){
+
+  const product =
+    lastSearchProducts.find(function(item){
+
+      return String(item.id) === String(id);
+
+    });
+
+
+  if(!product){
 
     alert(
-      name+
-      '\n\nThis product does not have an affiliate link yet.'
+      'Zhyken could not load this product.'
     );
 
     return;
+
   }
 
-  window.open(
-    url,
-    '_blank',
-    'noopener,noreferrer'
-  );
+
+  document.getElementById('homePage').style.display='none';
+
+  document.getElementById('resultsPage').style.display='none';
+
+  document.getElementById('productPage').style.display='block';
+
+
+  const name =
+    product.name ||
+    'Unnamed product';
+
+
+  const description =
+    product.description ||
+    'Product details available soon.';
+
+
+  document.getElementById(
+    'productPageTitle'
+  ).textContent = name;
+
+
+  document.getElementById(
+    'productPageDescription'
+  ).textContent = description;
+
+
+  document.getElementById(
+    'productPagePrice'
+  ).textContent =
+    product.price_inr != null
+    ? '₹'+product.price_inr
+    : 'Price unavailable';
+
+
+  /* PRODUCT IMAGE */
+
+  const image =
+    product.image_url ||
+    product.image ||
+    product.photo_url ||
+    '';
+
+
+  const imageContainer =
+    document.getElementById(
+      'productHeroImage'
+    );
+
+
+  if(image){
+
+    imageContainer.innerHTML = `
+      <img
+        src="${escapeHtml(image)}"
+        alt="${escapeHtml(name)}">
+    `;
+
+  }else{
+
+    imageContainer.innerHTML = `
+      <div class="productImagePlaceholder">
+        Product image will appear here.
+      </div>
+    `;
+
+  }
+
+
+  /* PRODUCT META */
+
+  const meta =
+    document.getElementById(
+      'productPageMeta'
+    );
+
+
+  let metaHtml='';
+
+
+  if(product.rating != null){
+
+    metaHtml += `
+      <span class="productMetaChip">
+        ⭐ ${escapeHtml(product.rating)} rating
+      </span>
+    `;
+
+  }
+
+
+  if(product.category){
+
+    metaHtml += `
+      <span class="productMetaChip">
+        ${escapeHtml(product.category)}
+      </span>
+    `;
+
+  }
+
+
+  if(product.room){
+
+    metaHtml += `
+      <span class="productMetaChip">
+        ${escapeHtml(product.room)}
+      </span>
+    `;
+
+  }
+
+
+  meta.innerHTML =
+    metaHtml;
+
+
+  /* WHY IT STANDS OUT */
+
+  let whyText =
+    'This product is currently part of Zhyken’s product selection.';
+
+
+  if(product.description){
+
+    whyText =
+      product.description;
+
+  }
+
+
+  document.getElementById(
+    'productWhyText'
+  ).textContent = whyText;
+
+
+  /* AMAZON BUTTON */
+
+  const button =
+    document.getElementById(
+      'checkPriceButton'
+    );
+
+
+  if(product.affiliate_url){
+
+    button.disabled=false;
+
+    button.textContent =
+      'Check price on Amazon →';
+
+
+    button.onclick=function(){
+
+      window.open(
+        product.affiliate_url,
+        '_blank',
+        'noopener,noreferrer'
+      );
+
+    };
+
+  }else{
+
+    button.disabled=true;
+
+    button.textContent =
+      'Amazon link unavailable';
+
+    button.onclick=null;
+
+  }
+
+
+  window.scrollTo({
+    top:0,
+    behavior:'smooth'
+  });
+
+}
+
+
+function backToResults(){
+
+  document.getElementById(
+    'productPage'
+  ).style.display='none';
+
+
+  document.getElementById(
+    'resultsPage'
+  ).style.display='block';
+
+
+  window.scrollTo({
+    top:0,
+    behavior:'smooth'
+  });
 
 }
 
