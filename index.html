@@ -2428,10 +2428,18 @@ function openProduct(id){
   const roast =
     getRandomRoast();
 
+  const roastElement =
+    document.getElementById(
+      'productRoast'
+    );
+
+  roastElement.textContent =
+    roast;
+
   button.disabled = true;
 
   button.textContent =
-    roast;
+    'Check price on Amazon →';
 
   window.open(
     product.affiliate_url,
