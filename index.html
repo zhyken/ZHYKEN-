@@ -2162,7 +2162,67 @@ function productCard(product){
   `;
 
 }
+  
+/* =========================================
+   ZHYKEN ROASTS
+========================================= */
 
+const zhykenRoasts = [
+
+  "Kisi ne gift nahi diya? Koi nahi… khud ko gift kar do. ",
+  "Usne reply nahi kiya? Koi nahi… Amazon karega. ",
+  "Usne tumhe chhod diya? Koi nahi… delivery wala nahi chhodega. ",
+  "Usne bola ‘tum deserve better.’ Better kya? Ye le. ",
+  "Reply ka wait karte-karte thak gaye? Delivery ka wait kar lo. ",
+  "Koi tumhara wait nahi kar raha? Koi nahi… delivery wala karega. ",
+  "Single ho? Perfect. Ab koi nahi bolega ‘ye kyun khareeda?’ ",
+  "Usne chhod diya? Koi baat nahi, Amazon abhi bhi tumhe accept karega. ",
+  "Pyaar nahi mila? Koi nahi… delivery toh mil sakti hai. ",
+  "Seen pe chhod diya? Koi nahi, Buy Now tumhe ignore nahi karega. ",
+  "No one loves you enough to buy it for you? Tough. Buy it yourself. ",
+  "No girlfriend? No boyfriend? Congratulations, you're the sole decision-maker. ",
+  "Nobody chose you? Don't worry. You can still choose ‘Buy Now.’ ",
+  "Your ex won't text back. But this button actually does something. ",
+  "Single again? Excellent. Nobody can judge the purchase. ",
+  "No date tonight? At least your cart has plans. ",
+  "Nobody waiting for you? Great. Take your time. ",
+  "No good morning text? Here's your good shopping decision. ",
+  "They didn't choose you. This purchase might. ",
+  "Your ex isn't coming back. Your package is. ",
+  "Left on read? At least this button responds."
+
+];
+
+
+/* =========================================
+   RANDOM ROAST
+========================================= */
+
+let lastRoastIndex = -1;
+
+function getRandomRoast(){
+
+  let index;
+
+  do{
+
+    index =
+      Math.floor(
+        Math.random() *
+        zhykenRoasts.length
+      );
+
+  }while(
+    zhykenRoasts.length > 1 &&
+    index === lastRoastIndex
+  );
+
+  lastRoastIndex = index;
+
+  return zhykenRoasts[index];
+
+}
+  
 
 /* =========================================
    ZHYKEN PRODUCT PAGE
@@ -2346,25 +2406,20 @@ function openProduct(id){
 
     button.onclick=function(){
 
-  const start = performance.now();
+  const roast =
+    getRandomRoast();
 
-  button.textContent = 'Opening Amazon…';
+  button.disabled = true;
 
-  const newTab = window.open(
+  button.textContent =
+    roast;
+
+  window.open(
     product.affiliate_url,
     '_blank',
     'noopener,noreferrer'
   );
 
-  const elapsed = ((performance.now() - start) / 1000).toFixed(2);
-
-  console.log(
-    'Zhyken → Amazon handoff started in:',
-    elapsed + ' seconds'
-  );
-
-  button.textContent =
-    'Opening Amazon… (' + elapsed + 's)';
 };
 
   }else{
