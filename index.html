@@ -2446,13 +2446,23 @@ function openProduct(id){
   const roast =
     getRandomRoast();
 
-  const roastElement =
-    document.getElementById(
-      'productRoast'
-    );
+      const roastElement =
+  document.getElementById(
+    'productRoast'
+  );
 
-  roastElement.textContent =
-    roast;
+roastElement.classList.remove(
+  'roastPop'
+);
+
+void roastElement.offsetWidth;
+
+roastElement.textContent =
+  roast;
+
+roastElement.classList.add(
+  'roastPop'
+);
 
   button.disabled = true;
 
